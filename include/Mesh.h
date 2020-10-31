@@ -20,14 +20,14 @@ struct Mesh{
     // Total number of conceptual vertices
     uint m_verticesNum;
     // Total size of m_vertexPositions (m_verticesNum * 3)
-    uint m_verticesSize;
+    uint m_verticesDataSize;
     // Vertex data buffer
-    float * m_vertices;
+    float * m_verticesData;
 
     // Total number of elements for m_faceIndices
-    uint m_faceIndicesSize;
+    uint m_faceIndicesDataSize;
     // Ptr to face indices data
-    uint * m_faceIndices;
+    uint * m_faceIndicesData;
 }
 
 #endif /* MESH */
