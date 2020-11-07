@@ -1,6 +1,10 @@
 #ifndef KERNEL_H
 #define KERNEL_H
 
+// 
+#include "MeshViewer.h"
+#include "ParticleViewer.h"
+
 // Window management
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
@@ -13,7 +17,7 @@ public:
     }
 
     // 
-    bool init();
+    bool init(uint _windowWidth, uint _windowHeight, std::string const & _windowName);
 
     // Viewer camera
     Camera m_viewerCamera;
@@ -32,8 +36,9 @@ private:
     std::string m_windowName;
 
     SDL_Window * m_window = nullptr;
-    SDL_GLContext * m_context = nullptr;
+    SDL_GLContext m_context = nullptr;
 
+    bool m_isInitialized = false;
 };
 
 #endif /* KERNEL_H */

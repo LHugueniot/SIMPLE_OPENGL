@@ -3,7 +3,8 @@
 
 #include "Common.h"
 
-struct Mesh{
+template<typename Container>
+struct MeshViewer{
 
     // Mesh name
     std::string m_name;
@@ -19,12 +20,16 @@ struct Mesh{
     // Total size of m_vertexPositions (m_verticesNum * 3)
     uint m_verticesDataSize;
     // Vertex data buffer
-    float * m_verticesData;
+    Container<float> * m_verticesData;
 
     // Total number of elements for m_faceIndices
     uint m_faceIndicesDataSize;
-    // Ptr to face indices data
-    uint * m_faceIndicesData;
+    // Ptr to face indices data 
+    Container<uint> * m_faceIndicesData;
+
+    void init(Container<float> * _verticesData, Container<uint> * _faceIndicesData;);
+
+    void draw(Eigen::Matrix4f const & viewProjMat);
 }
 
 #endif /* MESH_VIEWER_H */
