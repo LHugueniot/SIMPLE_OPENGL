@@ -1,35 +1,45 @@
 #ifndef MESH_VIEWER_H
 #define MESH_VIEWER_H
 
+#include "Shader.h"
 #include "Common.h"
 
 template<typename Container>
 struct MeshViewer{
 
+    MeshViewer(std::string const & _name, 
+               Eigen::Matrix4f _model = Eigen::Matrix4f::Identity());
+
     // Mesh name
     std::string m_name;
+
     // Vertex Array Object
-    GLuint m_vao;
+    GLuint m_vao = 0;
+
     // Vertex Buffer Object
-    GLuint m_vbo;
+    GLuint m_vbo = 0;
+    uint m_vbSize = 0;
+
     // Index Buffer Object
-    GLuint m_ibo;
+    GLuint m_ibo = 0;
+    uint m_ibSize = 0;
 
-    // Total number of conceptual vertices
-    uint m_verticesNum;
-    // Total size of m_vertexPositions (m_verticesNum * 3)
-    uint m_verticesDataSize;
-    // Vertex data buffer
-    Container<float> * m_verticesData;
+    Eigen::Matrix4f model;
 
-    // Total number of elements for m_faceIndices
-    uint m_faceIndicesDataSize;
-    // Ptr to face indices data 
-    Container<uint> * m_faceIndicesData;
+    std::shared_ptr<Shader> m_shaderProgram;
 
-    void init(Container<float> * _verticesData, Container<uint> * _faceIndicesData;);
+    void init(Container<float> const & verticesData = nullptr, 
+              Container<uint> const & facesIndicesData = nullptr);
 
-    void draw(Eigen::Matrix4f const & viewProjMat);
+    void draw(Eigen::Matrix4f const & viewProj);
+
+    void load(Container<float> const & verticesData,
+              Container<uint> const & facesIndicesData);
+
+    bool loadVerticesData(Container<float> const & verticesData);
+    bool loadFacesIndicesData(Container<float> const & facesIndicesData);
 }
+
+typedef HostMeshViewer = MeshViewer<std::vector>;
 
 #endif /* MESH_VIEWER_H */

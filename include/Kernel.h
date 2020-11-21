@@ -11,14 +11,14 @@
 
 class Kernel {
 public:
-    static Kernel& get() {
-    	static Kernel instance;
-        return instance;
-    }
 
-    // 
-    bool init(uint _windowWidth, uint _windowHeight, std::string const & _windowName);
+    // Init kernel
+    bool init(uint _windowWidth,
+              uint _windowHeight,
+              std::string const & _windowName);
+    bool teardown();
 
+    bool loadScene(std::string const & scenePath);
     // Viewer camera
     Camera m_viewerCamera;
 
@@ -27,8 +27,6 @@ public:
     std::vector<ParticleViewer *> m_particleViewers;
 
 private:
-
-    Kernel() = default;
 
     // SDL Window data
     uint m_windowWidth;

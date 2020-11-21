@@ -48,25 +48,102 @@ bool Kernel::init(uint _windowWidth, uint _windowHeight, std::string const & _wi
         m_isInitialized = false;
         return false;
     }
+
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    //glDepthFunc(GL_LESS);
 
     glClearColor(0.5f, 0.5f, 0.5f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if(m_window && m_context)
         SDL_GL_SwapWindow(m_window);
 
+
+
     m_isInitialized = true;
-    return true;
+    return m_isInitialized;
 }
 
 bool Kernel::teardown(){
+
     if(m_isInitialized){
+
         SDL_GL_DeleteContext(m_context);
         SDL_DestroyWindow(m_window);
         SDL_Quit();
         m_isInitialized = false;
         return true;
     }
+
     return false;
+}
+
+void Kernel::run(){
+    bool quit = false;
+
+    while(!quit){
+
+        SDL_Event event;
+
+        while (SDL_PollEvent(&event) != 0){
+
+            switch (event.type){
+
+                case SDL_QUIT:
+                    quit = true;
+                    break;
+
+                case SDL_KEYDOWN:
+
+                    switch(event.key.keysym.sym){
+
+                    case SDLK_LEFT:
+                        camera.move(Camera::ORBIT_LEFT);
+                        std::cout<<"SDLK_LEFT"<<std::endl;
+                        break;
+
+                    case SDLK_RIGHT:
+                        camera.move(Camera::ORBIT_RIGHT);
+                        std::cout<<"SDLK_RIGHT"<<std::endl;
+                        break;
+
+                    case SDLK_UP:
+                        camera.move(Camera::ORBIT_UP);
+                        std::cout<<"SDLK_UP"<<std::endl;
+                        break;
+
+                    case SDLK_DOWN:
+                        camera.move(Camera::ORBIT_DOWN);
+                        std::cout<<"SDLK_DOWN"<<std::endl;
+                        break;
+                    }
+                    break;
+
+                case SDL_MOUSEWHEEL:
+                    if(event.wheel.y < 0)       // scroll up
+                        camera.move(Camera::ZOOM_IN);
+                    else if(event.wheel.y > 0)  // scroll down
+                        camera.move(Camera::ZOOM_OUT);
+                    break;
+            }
+        }
+
+
+        glClearColor(.5f, 0.5f, 0.5f, 1.f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        camera.update();
+        Matrix4f cameraVP = camera.projMat * camera.viewMat;
+
+        for(auto & viewable : MeshViewer)
+            viewable->draw(cameraVP)
+
+        for(auto & viewable : particleViewer)
+            viewable->draw(cameraVP)
+        // Main stuff
+        updatePlaneVAO(gridPlane);
+        drawPlane(gridPlane, cameraVP);
+
+        SDL_GL_SwapWindow(state.window);
+    }
+    teardown(state);
 }
