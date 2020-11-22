@@ -1,12 +1,16 @@
 #include "MeshViewer.h"
 
-MeshViewer::MeshViewer(std::string const & _name,                
-                       Eigen::Matrix4f _model) : 
+template<template <typename... Args> class Container>
+MeshViewer<Container>::MeshViewer(
+        std::string const & _name,                
+        Eigen::Matrix4f const & _model) : 
     m_name(_name),
     m_model(_model){}
 
-void MeshViewer::init(Container<float> const & verticesData = nullptr, 
-					  Container<uint> const & faceIndicesData = nullptr){
+template<template <typename... Args> class Container>
+void MeshViewer<Container>::init(
+        Container<float> const & verticesData, 
+        Container<uint> const & facesIndicesData){
 
 	// Gen VAO
 	glCreateVertexArrays(1, &m_vao);
@@ -22,44 +26,48 @@ void MeshViewer::init(Container<float> const & verticesData = nullptr,
     	loadFacesData(facesIndicesData);
 }
 
-
-bool MeshViewer::load(Container<float> const & verticesData, 
-					  Container<uint> const & faceIndicesData){
+template<template <typename... Args> class Container>
+void MeshViewer<Container>::load(
+        Container<float> const & verticesData, 
+        Container<uint> const & facesIndicesData){
     loadVerticesData(verticesData);
     loadFacesData(facesIndicesData);
 }
 
-void MeshViewer::loadVerticesData(Container<float> const & verticesData){
-    // Gen VBO
+template<template <typename... Args> class Container>
+void MeshViewer<Container>::loadVerticesData(
+        Container<float> const & verticesData){
+    // make vertex buffer the active buffer
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    // send buffer data to gpu
     glBufferData(GL_ARRAY_BUFFER,
                  verticesData.size() * sizeof(float),
                  &verticesData.data(), GL_STATIC_DRAW);
 
-    glEnableVertexArrayAttrib(m_vbo);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+    glEnableVertexAttribArray(0);
 }
 
-void MeshViewer::loadFacesIndicesData(Container<float> const & facesIndicesData){
+template<template <typename... Args> class Container>
+void MeshViewer<Container>::loadFacesIndicesData(
+        Container<float> const & facesIndicesData){
     // Gen IBO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-                 faceIndicesDataSize.size() * sizeof(uint), 
-                 &faceIndicesData.data(), GL_STATIC_DRAW);
+                 facesIndicesData.size() * sizeof(uint), 
+                 &facesIndicesData.data(), GL_STATIC_DRAW);
 }
 
-void MeshViewer::draw(Eigen::Matrix4f const & viewProj){
+template<template <typename... Args> class Container>
+void MeshViewer<Container>::draw(Eigen::Matrix4f const & viewProj){
 
-    Eigen::Matrix4f mvp = viewProj;
-
-    if(m_model)
-        mvp = model * mvp;
+    Eigen::Matrix4f mvp = m_model * viewProj;
 
     // Use our shader
-    m_shader.bind();
+    m_shaderProgram->bind();
 
     // Load VP mat into MVP
-    m_shader.setMat4f("MVP", &mvp);
+    m_shaderProgram->setMat4f("MVP", &mvp);
 
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(0);
@@ -86,5 +94,10 @@ void MeshViewer::draw(Eigen::Matrix4f const & viewProj){
 
     glDisableVertexAttribArray(0);
 
-    m_shader.unBind();
+    m_shaderProgram->unBind();
+}
+
+void linkHack(){
+    MeshViewer<std::vector> temp("temp");
+    temp.draw(Eigen::Matrix4f::Identity());
 }

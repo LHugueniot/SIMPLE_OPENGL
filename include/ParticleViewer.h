@@ -3,7 +3,7 @@
 
 #include "Common.h"
 
-template<typename Container>
+template<template <typename... Args> class Container>
 struct ParticleViewer{
 
     // Mesh name
@@ -27,7 +27,16 @@ struct ParticleViewer{
     // Ptr to face indices data
     Container<uint> * m_faceIndicesData;
 
-    void draw();
-}
+    void init(Container<float> const & verticesData = nullptr, 
+              Container<uint> const & facesIndicesData = nullptr);
+
+    void draw(Eigen::Matrix4f const & viewProj);
+
+    void load(Container<float> const & verticesData,
+              Container<uint> const & facesIndicesData);
+
+    bool loadVerticesData(Container<float> const & verticesData);
+    bool loadFacesIndicesData(Container<float> const & facesIndicesData);
+};
 
 #endif /* PARTICLE_VIEWER_H */

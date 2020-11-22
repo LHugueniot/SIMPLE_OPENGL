@@ -1,1 +1,1 @@
-g++ src/* -I/usr/include -Iinclude -I/usr/include/eigen3 -lGLEW  -lGL -lSDL2 -o a.out
+g++ --std=c++1z src/Camera.cpp src/ImportGeometry.cpp src/Kernel.cpp src/MeshViewer.cpp src/ParticleViewer.cpp src/Shader.cpp src/Utilities.cpp -I/usr/include -Iinclude -I/usr/include/eigen3 -lGLEW  -lGL -lSDL2 -lassimp -o a.out

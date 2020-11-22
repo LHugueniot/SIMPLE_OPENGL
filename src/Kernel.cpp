@@ -27,7 +27,7 @@ bool Kernel::init(uint _windowWidth, uint _windowHeight, std::string const & _wi
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
     m_window = SDL_CreateWindow(m_windowName.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                    windowWidth, windowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+                                m_windowWidth, m_windowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
     if(!m_window){
         std::cout<<"Failed to create window: "<<SDL_GetError()<<std::endl;
         m_isInitialized = false;
@@ -97,22 +97,22 @@ void Kernel::run(){
                     switch(event.key.keysym.sym){
 
                     case SDLK_LEFT:
-                        camera.move(Camera::ORBIT_LEFT);
+                        m_viewerCamera->move(Camera::ORBIT_LEFT);
                         std::cout<<"SDLK_LEFT"<<std::endl;
                         break;
 
                     case SDLK_RIGHT:
-                        camera.move(Camera::ORBIT_RIGHT);
+                        m_viewerCamera->move(Camera::ORBIT_RIGHT);
                         std::cout<<"SDLK_RIGHT"<<std::endl;
                         break;
 
                     case SDLK_UP:
-                        camera.move(Camera::ORBIT_UP);
+                        m_viewerCamera->move(Camera::ORBIT_UP);
                         std::cout<<"SDLK_UP"<<std::endl;
                         break;
 
                     case SDLK_DOWN:
-                        camera.move(Camera::ORBIT_DOWN);
+                        m_viewerCamera->move(Camera::ORBIT_DOWN);
                         std::cout<<"SDLK_DOWN"<<std::endl;
                         break;
                     }
@@ -120,9 +120,9 @@ void Kernel::run(){
 
                 case SDL_MOUSEWHEEL:
                     if(event.wheel.y < 0)       // scroll up
-                        camera.move(Camera::ZOOM_IN);
+                        m_viewerCamera->move(Camera::ZOOM_IN);
                     else if(event.wheel.y > 0)  // scroll down
-                        camera.move(Camera::ZOOM_OUT);
+                        m_viewerCamera->move(Camera::ZOOM_OUT);
                     break;
             }
         }
@@ -131,19 +131,15 @@ void Kernel::run(){
         glClearColor(.5f, 0.5f, 0.5f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        camera.update();
-        Matrix4f cameraVP = camera.projMat * camera.viewMat;
+        m_viewerCamera->update();
+        Eigen::Matrix4f cameraVP = m_viewerCamera->m_projMat * m_viewerCamera->m_viewMat;
 
-        for(auto & viewable : MeshViewer)
-            viewable->draw(cameraVP)
+        for(auto & viewable : m_meshViewers)
+            viewable->draw(cameraVP);
 
-        for(auto & viewable : particleViewer)
-            viewable->draw(cameraVP)
-        // Main stuff
-        updatePlaneVAO(gridPlane);
-        drawPlane(gridPlane, cameraVP);
+        for(auto & viewable : m_particleViewers)
+            viewable->draw(cameraVP);
 
-        SDL_GL_SwapWindow(state.window);
+        SDL_GL_SwapWindow(m_window);
     }
-    teardown(state);
 }

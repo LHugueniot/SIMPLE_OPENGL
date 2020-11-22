@@ -5,6 +5,6 @@
 
 #include "Common.h"
 
-std::string readFile(std::string_view const & filePath);
+std::string readFile(std::string const & filePath);
 
 #endif /* UTILITIES_H */

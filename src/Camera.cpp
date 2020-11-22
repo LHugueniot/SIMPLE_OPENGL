@@ -20,7 +20,7 @@ void setMatToProjection(Eigen::Matrix4f & projMat,
     projMat(3,3) = 0;
 }
 
-Camera::(float _windowWidth, 
+Camera::Camera(float _windowWidth, 
                float _windowHeight,
                float _fov, 
                float _far, 

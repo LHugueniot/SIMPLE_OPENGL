@@ -25,13 +25,15 @@
 
 using uint = unsigned int;
 
-namespace std{
-    template<class T>
-    const T& clamp( const T& v, const T& lo, const T& hi ){
-        assert(!(hi < lo));
-        return (v < lo) ? lo : (hi < v) ? hi : v;
-    }
-}
+#ifndef __cpp_lib_clamp
+ namespace std{
+     template<class T>
+     const T& clamp( const T& v, const T& lo, const T& hi ){
+         assert(!(hi < lo));
+         return (v < lo) ? lo : (hi < v) ? hi : v;
+     }
+ }
+#endif
 
 // Eigen declarations
 namespace Eigen{

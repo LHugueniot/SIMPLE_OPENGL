@@ -2,6 +2,7 @@
 #define KERNEL_H
 
 // 
+#include "Camera.h"
 #include "MeshViewer.h"
 #include "ParticleViewer.h"
 
@@ -18,13 +19,15 @@ public:
               std::string const & _windowName);
     bool teardown();
 
+    void run();
+
     bool loadScene(std::string const & scenePath);
     // Viewer camera
-    Camera m_viewerCamera;
+    std::unique_ptr<Camera> m_viewerCamera;
 
     // Viewers
-    std::vector<MeshViewer *> m_meshViewers;
-    std::vector<ParticleViewer *> m_particleViewers;
+    std::vector<MeshViewer<std::vector> *> m_meshViewers;
+    std::vector<ParticleViewer<std::vector> *> m_particleViewers;
 
 private:
 

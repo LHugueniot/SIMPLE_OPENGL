@@ -4,11 +4,11 @@
 #include "Shader.h"
 #include "Common.h"
 
-template<typename Container>
+template<template <typename... Args> class Container>
 struct MeshViewer{
 
     MeshViewer(std::string const & _name, 
-               Eigen::Matrix4f _model = Eigen::Matrix4f::Identity());
+               Eigen::Matrix4f const & _model = Eigen::Matrix4f::Identity());
 
     // Mesh name
     std::string m_name;
@@ -24,7 +24,7 @@ struct MeshViewer{
     GLuint m_ibo = 0;
     uint m_ibSize = 0;
 
-    Eigen::Matrix4f model;
+    Eigen::Matrix4f m_model;
 
     std::shared_ptr<Shader> m_shaderProgram;
 
@@ -36,10 +36,10 @@ struct MeshViewer{
     void load(Container<float> const & verticesData,
               Container<uint> const & facesIndicesData);
 
-    bool loadVerticesData(Container<float> const & verticesData);
-    bool loadFacesIndicesData(Container<float> const & facesIndicesData);
-}
+    void loadVerticesData(Container<float> const & verticesData);
+    void loadFacesIndicesData(Container<float> const & facesIndicesData);
+};
 
-typedef HostMeshViewer = MeshViewer<std::vector>;
+//typedef HostMeshViewer = MeshViewer<std::vector>;
 
 #endif /* MESH_VIEWER_H */
