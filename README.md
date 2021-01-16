@@ -9,4 +9,4 @@ SIMPLE_OPENGL:
 
 Simple opengl application (not library) that we can load a mesh or particles into.
 
-Has graphical interface classes for mesh and particles that only store opengl data
+Has graphical interface classes for mesh and particles that only store opengl data.

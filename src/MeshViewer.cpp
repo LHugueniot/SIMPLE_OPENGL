@@ -49,6 +49,16 @@ void MeshViewer<Container>::loadVerticesData(
 }
 
 template<template <typename... Args> class Container>
+void MeshViewer<Container>::loadColourData(
+        Container<float> const & colourData){
+    // Gen IBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+                 facesIndicesData.size() * sizeof(uint), 
+                 &facesIndicesData.data(), GL_STATIC_DRAW);
+}
+
+template<template <typename... Args> class Container>
 void MeshViewer<Container>::loadFacesIndicesData(
         Container<float> const & facesIndicesData){
     // Gen IBO
@@ -97,7 +107,7 @@ void MeshViewer<Container>::draw(Eigen::Matrix4f const & viewProj){
     m_shaderProgram->unBind();
 }
 
-void linkHack(){
+void meshLinkHack(){
     MeshViewer<std::vector> temp("temp");
     temp.draw(Eigen::Matrix4f::Identity());
 }

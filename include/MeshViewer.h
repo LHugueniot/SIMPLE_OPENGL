@@ -20,6 +20,10 @@ struct MeshViewer{
     GLuint m_vbo = 0;
     uint m_vbSize = 0;
 
+    // Colour Buffer Object
+    GLuint m_cbo = 0;
+    uint m_cbSize = 0;
+
     // Index Buffer Object
     GLuint m_ibo = 0;
     uint m_ibSize = 0;
@@ -37,9 +41,12 @@ struct MeshViewer{
               Container<uint> const & facesIndicesData);
 
     void loadVerticesData(Container<float> const & verticesData);
+    void loadColourData(Container<float> const & colourData);
     void loadFacesIndicesData(Container<float> const & facesIndicesData);
 };
 
-//typedef HostMeshViewer = MeshViewer<std::vector>;
+//struct MeshViewerColour
+
+using HostMeshViewer = MeshViewer<std::vector>;
 
 #endif /* MESH_VIEWER_H */

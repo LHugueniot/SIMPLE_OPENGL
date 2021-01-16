@@ -1,9 +1,14 @@
 #include "Kernel.h"
 
+Kernel::Kernel(){}
+
 bool Kernel::init(uint _windowWidth, uint _windowHeight, std::string const & _windowName){
     m_windowWidth = _windowWidth;
     m_windowHeight = _windowHeight; 
     m_windowName = _windowName;
+
+    if(!m_viewerCamera)
+        m_viewerCamera = std::make_shared<Camera>(m_windowWidth, m_windowHeight);
 
     std::atexit(SDL_Quit);
 
@@ -33,7 +38,7 @@ bool Kernel::init(uint _windowWidth, uint _windowHeight, std::string const & _wi
         m_isInitialized = false;
         return false;
     }
-
+    
     m_context = SDL_GL_CreateContext(m_window);
     if(!m_context){
         std::cout<<"Failed to create GL context: "<<SDL_GetError()<<std::endl;
@@ -57,8 +62,6 @@ bool Kernel::init(uint _windowWidth, uint _windowHeight, std::string const & _wi
     if(m_window && m_context)
         SDL_GL_SwapWindow(m_window);
 
-
-
     m_isInitialized = true;
     return m_isInitialized;
 }
@@ -79,7 +82,10 @@ bool Kernel::teardown(){
 
 void Kernel::run(){
     bool quit = false;
-
+    if(!m_isInitialized){
+        std::cout<<"Class is not initialized, mermory leak likely, quitting now."<<std::endl;
+        return
+    }
     while(!quit){
 
         SDL_Event event;

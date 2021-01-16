@@ -3,7 +3,12 @@
 int main(void) {
 
     Kernel kernel;
-    kernel.init(640,640,"SIMPLE_OPENGL");
-    kernel.run();
-    kernel.teardown();
+    bool initSuccess = kernel.init(640,640,"SIMPLE_OPENGL");
+    if(initSuccess){
+    	kernel.run();
+    	kernel.teardown();
+    }
+    else{
+    	std::cout<<"Failure."<<std::endl;
+    }
 }
